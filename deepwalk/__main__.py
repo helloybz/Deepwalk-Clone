@@ -43,5 +43,6 @@ if __name__ == "__main__":
     directionality = parser.add_mutually_exclusive_group()
     directionality.add_argument("--undirected", action="store_true")
     directionality.add_argument("--directed", action="store_true")
+    parser.add_argument('--gpu', type=str, default=None)
     config = parser.parse_args()
     main(config)

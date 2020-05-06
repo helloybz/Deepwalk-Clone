@@ -14,7 +14,7 @@ class BinaryTree(nn.Module):
                 break
             self.depth += 1
         self.tree = nn.ModuleList(
-            [nn.Linear(num_dimensions, 1) for i in range(self.size)])
+            [nn.Linear(num_dimensions, 1, bias=False) for i in range(self.size)])
 
     def forward(self, collocation):
         center_idx, window_idx = collocation
@@ -24,12 +24,12 @@ class BinaryTree(nn.Module):
             collocation)
         center_embedding = self.tree[center_tree_idx].weight.data
 
-        probability_collocation = torch.tensor([1])
+        probability_collocation = 1
         tree_idx = 0
         for direction, d in zip(path, range(self.depth)):
             probability = self.tree[tree_idx](center_embedding).sigmoid()
+            probability_collocation = probability.mul(probability_collocation)
             tree_idx = 2 * tree_idx + direction
-            probability_collocation = probability_collocation.mul(probability)
         return probability_collocation
 
     def convert_into_tree_idx(self, collocation):
