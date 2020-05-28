@@ -1,4 +1,7 @@
 import argparse
+import os
+
+from numpy import save
 
 from .binary_tree import BinaryTree
 from .graph import Graph
@@ -24,17 +27,20 @@ def main(config):
         binary_tree=binary_tree,
         random_walks=walker.traces,
         window_size=config.skipgram_window_size,
-        config=config
+        config=config,
     )
     skipgram.train()
-    breakpoint()
+
+    embeddings = binary_tree.get_node_embeddings()
+    save(os.path.join(config.output_dir), embeddings)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog="DeepWalk"
     )
-    parser.add_argument("--input_dir", type=str)
+    parser.add_argument("--input_path", type=str)
+    parser.add_argument("--output_path", type=str)
     parser.add_argument("--walks_per_node", type=int, default=5)
     parser.add_argument("--steps_per_walk", type=int, default=10)
     parser.add_argument("--n_dims", type=int, default=16)

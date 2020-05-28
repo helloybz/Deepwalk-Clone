@@ -5,6 +5,7 @@ import torch.nn as nn
 class BinaryTree(nn.Module):
     def __init__(self, num_nodes_in_graphs, num_dimensions):
         super(BinaryTree, self).__init__()
+        self.num_nodes_in_graphs = num_nodes_in_graphs
         self.size = 0
         self.depth = 0
         while True:
@@ -49,3 +50,8 @@ class BinaryTree(nn.Module):
     @property
     def graph_node_head(self):
         return sum([2 ** d for d in range(self.depth)])
+
+    def get_node_embeddings(self):
+        target_modules = self.tree[self.graph_node_head: self.graph_node_head +
+                                   self.num_nodes_in_graphs]
+        return torch.stack([module.weight.data.squeeze().cpu() for module in target_modules]).numpy()
