@@ -12,6 +12,7 @@ from .skipgram import SkipGram
 def main(config):
     graph = Graph(config)
 
+    # Binary tree for applying hierarchical softmax.
     binary_tree = BinaryTree(
         num_nodes_in_graphs=len(graph.nodes),
         num_dimensions=config.n_dims,

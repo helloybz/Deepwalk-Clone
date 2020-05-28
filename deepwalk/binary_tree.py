@@ -4,6 +4,12 @@ import torch.nn as nn
 
 class BinaryTree(nn.Module):
     def __init__(self, num_nodes_in_graphs, num_dimensions):
+        """
+            Building a Binary Tree. 
+            The vector with d-dim will be assigned to the each nodes.
+            The vector will be used as not only a binary classifier, 
+            but also the embeddings of the node of the given graphs.
+        """
         super(BinaryTree, self).__init__()
         self.num_nodes_in_graphs = num_nodes_in_graphs
         self.size = 0
@@ -18,6 +24,13 @@ class BinaryTree(nn.Module):
             [nn.Linear(num_dimensions, 1, bias=False) for i in range(self.size)])
 
     def forward(self, collocation):
+        """
+            Hierarchical Softmax. Each node has its own embedding.
+            The probability of collocation is computed based the embeddings.
+            After the training is done,  the embeddings of the nodes 
+            in [0, num_nodeds_in_graphs) of the deepest layer is considered 
+            as the node embedddings of the given graph.
+        """
         center_idx, window_idx = collocation
         path = self.find_path(window_idx)
 
