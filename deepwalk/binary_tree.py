@@ -4,7 +4,14 @@ import torch.nn as nn
 
 class BinaryTree(nn.Module):
     def __init__(self, num_nodes_in_graphs, num_dimensions):
+        """
+            Building a Binary Tree. 
+            The vector with d-dim will be assigned to the each nodes.
+            The vector will be used as not only a binary classifier, 
+            but also the embeddings of the node of the given graphs.
+        """
         super(BinaryTree, self).__init__()
+        self.num_nodes_in_graphs = num_nodes_in_graphs
         self.size = 0
         self.depth = 0
         while True:
@@ -14,9 +21,16 @@ class BinaryTree(nn.Module):
                 break
             self.depth += 1
         self.tree = nn.ModuleList(
-            [nn.Linear(num_dimensions, 1) for i in range(self.size)])
+            [nn.Linear(num_dimensions, 1, bias=False) for i in range(self.size)])
 
     def forward(self, collocation):
+        """
+            Hierarchical Softmax. Each node has its own embedding.
+            The probability of collocation is computed based the embeddings.
+            After the training is done,  the embeddings of the nodes 
+            in [0, num_nodeds_in_graphs) of the deepest layer is considered 
+            as the node embedddings of the given graph.
+        """
         center_idx, window_idx = collocation
         path = self.find_path(window_idx)
 
@@ -24,12 +38,12 @@ class BinaryTree(nn.Module):
             collocation)
         center_embedding = self.tree[center_tree_idx].weight.data
 
-        probability_collocation = torch.tensor([1])
+        probability_collocation = 1
         tree_idx = 0
         for direction, d in zip(path, range(self.depth)):
             probability = self.tree[tree_idx](center_embedding).sigmoid()
+            probability_collocation = probability.mul(probability_collocation)
             tree_idx = 2 * tree_idx + direction
-            probability_collocation = probability_collocation.mul(probability)
         return probability_collocation
 
     def convert_into_tree_idx(self, collocation):
@@ -49,3 +63,8 @@ class BinaryTree(nn.Module):
     @property
     def graph_node_head(self):
         return sum([2 ** d for d in range(self.depth)])
+
+    def get_node_embeddings(self):
+        target_modules = self.tree[self.graph_node_head: self.graph_node_head +
+                                   self.num_nodes_in_graphs]
+        return torch.stack([module.weight.data.squeeze().cpu() for module in target_modules]).numpy()
