@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/deelwalk-clone/static/css/main.ff0e889c.chunk.css",
+    "main.js": "/deelwalk-clone/static/js/main.fbc890c6.chunk.js",
+    "main.js.map": "/deelwalk-clone/static/js/main.fbc890c6.chunk.js.map",
+    "runtime-main.js": "/deelwalk-clone/static/js/runtime-main.ccb97a17.js",
+    "runtime-main.js.map": "/deelwalk-clone/static/js/runtime-main.ccb97a17.js.map",
+    "static/js/2.97fcc7ee.chunk.js": "/deelwalk-clone/static/js/2.97fcc7ee.chunk.js",
+    "static/js/2.97fcc7ee.chunk.js.map": "/deelwalk-clone/static/js/2.97fcc7ee.chunk.js.map",
+    "static/js/3.40fc1f96.chunk.js": "/deelwalk-clone/static/js/3.40fc1f96.chunk.js",
+    "static/js/3.40fc1f96.chunk.js.map": "/deelwalk-clone/static/js/3.40fc1f96.chunk.js.map",
+    "index.html": "/deelwalk-clone/index.html",
+    "static/css/main.ff0e889c.chunk.css.map": "/deelwalk-clone/static/css/main.ff0e889c.chunk.css.map",
+    "static/js/2.97fcc7ee.chunk.js.LICENSE.txt": "/deelwalk-clone/static/js/2.97fcc7ee.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.ccb97a17.js",
+    "static/js/2.97fcc7ee.chunk.js",
+    "static/css/main.ff0e889c.chunk.css",
+    "static/js/main.fbc890c6.chunk.js"
+  ]
+}
