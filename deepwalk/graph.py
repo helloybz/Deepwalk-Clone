@@ -71,3 +71,9 @@ class Graph(Dataset):
             idx: int
     ) -> Vertex:
         return self.V[idx]
+
+    def get_neighbors(
+        self,
+        v: Vertex,
+    ) -> list[Vertex]:
+        return [edge.dst for edge in self.E if edge.src == v]
