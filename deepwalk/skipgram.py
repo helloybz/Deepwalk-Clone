@@ -1,45 +1,61 @@
 import numpy as np
 import torch
+from torch import random
 from torch.nn import BCELoss
 from torch.optim import SGD
 from torch.utils.data import DataLoader
 
+from deepwalk.binary_tree import BinaryTree
+from deepwalk.random_walker import RandomWalker
+
 
 class SkipGram(object):
-    def __init__(self, binary_tree, random_walks, window_size, config):
+    def __init__(
+        self,
+        binary_tree:    BinaryTree,
+        random_walker:  RandomWalker,
+        window_size:    int,
+        lr:             float,
+        batch_size:     int,
+        device:         torch.device,
+    ) -> None:
         self.binary_tree = binary_tree
-        self.collocations = self.make_collocations(random_walks, window_size)
         self.criterion = BCELoss()
         self.optimizer = SGD(
             params=self.binary_tree.parameters(),
-            lr=config.lr,
+            lr=lr,
         )
-        self.device = torch.device(f"cuda:{config.gpu}" if config.gpu else 'cpu')
+        self.device = device
 
-    def train(self):
-        self.loader = DataLoader(
-            self.collocations,
+        self.dataloader = DataLoader(
+            dataset=random_walker,
+            batch_size=1,
             shuffle=True,
             pin_memory=True,
         )
-        self.binary_tree.to(self.device)
-        for collocation in self.loader:
-            self.optimizer.zero_grad()
-            collocation = [idx.to(self.device, non_blocking=True) for idx in collocation]
-            prop_collocation = self.binary_tree(collocation)
-            loss = self.criterion(prop_collocation, prop_collocation.new_ones(prop_collocation.shape))
-            loss.backward()
-            self.optimizer.step()
+        self.window_size = window_size
 
-    @staticmethod
-    def make_collocations(random_walks, window_size):
+    def train(self):
+        self.binary_tree.train()
+        self.binary_tree.to(self.device)
+
+        for walk in self.dataloader:
+            collocations = self._make_collocations(walk)
+            for v_j, u_k in collocations:
+                self.optimizer.zero_grad()
+                prob_collocation = self.binary_tree(v_j.idx, u_k.idx)
+                loss = prob_collocation.add(1e-4).log().neg()
+                loss.backward()
+                self.optimizer.step()
+
+    def _make_collocations(self, random_walks):
         collocations = list()
         for random_walk in random_walks:
             for i in range(len(random_walk)):
-                center_node = random_walk[i]
-                nodes_in_window = \
-                    random_walk[max(i-window_size, 0): i] + \
-                    random_walk[i+1:min((i+window_size)+1, len(random_walk)-1)]
-                for node_in_window in nodes_in_window:
-                    collocations.append([center_node, node_in_window])
+                v_j = random_walk[i]
+                windowed_vertices = \
+                    random_walk[max(i-self.window_size, 0): i] + \
+                    random_walk[i+1:min((i+self.window_size)+1, len(random_walk)-1)]
+                for u_k in windowed_vertices:
+                    collocations.append([v_j, u_k])
         return collocations
