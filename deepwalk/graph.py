@@ -8,8 +8,10 @@ class Vertex(object):
     def __init__(
         self,
         id_: str or int,
+        idx: int,
     ) -> None:
         self.id_ = id_
+        self.idx = idx
 
     def __repr__(self):
         return f'Vertex_{self.id_}'
@@ -40,10 +42,11 @@ class Graph(Dataset):
         # A set of the vertices, V
         self.V = [
             Vertex(
-                id_=vertex_id
+                id_=vertex_id,
+                idx=idx,
             )
-            for vertex_id
-            in self.vertex_ids
+            for idx, vertex_id
+            in enumerate(self.vertex_ids)
         ]
 
         # A set of the edges, E
