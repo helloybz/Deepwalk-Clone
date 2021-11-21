@@ -43,19 +43,17 @@ class SkipGram(object):
             collocations = self._make_collocations(walk)
             for v_j, u_k in collocations:
                 self.optimizer.zero_grad()
-                prob_collocation = self.binary_tree(v_j.idx, u_k.idx)
-                loss = prob_collocation.add(1e-4).log().neg()
+                prob_collocation = self.binary_tree(v_j, u_k)
+                loss = prob_collocation.add(1e-7).log().neg()
                 loss.backward()
                 self.optimizer.step()
 
-    def _make_collocations(self, random_walks):
+    def _make_collocations(self, random_walk):
         collocations = list()
-        for random_walk in random_walks:
-            for i in range(len(random_walk)):
-                v_j = random_walk[i]
-                windowed_vertices = \
-                    random_walk[max(i-self.window_size, 0): i] + \
-                    random_walk[i+1:min((i+self.window_size)+1, len(random_walk)-1)]
-                for u_k in windowed_vertices:
-                    collocations.append([v_j, u_k])
+        for idx_in_walk, v_j in enumerate(random_walk):
+            windowed_vertices = \
+                random_walk[max(idx_in_walk-self.window_size, 0): idx_in_walk] + \
+                random_walk[idx_in_walk+1:min((idx_in_walk+self.window_size)+1, len(random_walk)-1)]
+            for u_k in windowed_vertices:
+                collocations.append([v_j, u_k])
         return collocations

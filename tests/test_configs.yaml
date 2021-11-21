@@ -6,4 +6,3 @@ random_walker:
 skipgram:
   lr: 0.025
   window_size: 2
-  batch_size: 4
