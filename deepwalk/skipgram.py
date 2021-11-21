@@ -16,7 +16,6 @@ class SkipGram(object):
         random_walker:  RandomWalker,
         window_size:    int,
         lr:             float,
-        batch_size:     int,
         device:         torch.device,
     ) -> None:
         self.binary_tree = binary_tree
