@@ -38,7 +38,6 @@ def main(args):
         binary_tree=binary_tree,
         random_walker=random_walker,
         device=device,
-        batch_size=hparams["batch_size"],
         ** hparams["skipgram"],
     )
 
