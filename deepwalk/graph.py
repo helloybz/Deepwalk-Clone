@@ -1,57 +1,82 @@
-import os
-import random
+from pathlib import Path
 
-import numpy as np
+import torch
+from torch.utils.data import Dataset
 
 
-class Graph(object):
-    def __init__(self, config):
-        self.nodes = self._make_node_entry(config.input_dir)
-        self.A = self._make_adjacency_matrix(self.nodes, config)
+class Vertex(object):
+    def __init__(
+        self,
+        id_: str or int,
+        idx: int,
+    ) -> None:
+        self.id_ = id_
+        self.idx = idx
 
-    def get_neighbors(self, idx):
-        return self.A[1, self.A[0] == idx].tolist()
+    def __repr__(self):
+        return f'Vertex_{self.id_}'
 
-    def get_random_neighbor(self, idx):
-        neighbors = self.get_neighbors(idx)
-        how_many = 1
+
+class Edge(object):
+    def __init__(
+        self,
+        src: Vertex,
+        dst: Vertex,
+    ) -> None:
+        self.src, self.dst = src, dst
+
+
+class Graph(Dataset):
+    def __init__(
+        self,
+        data_root: Path,
+    ) -> None:
+        super(Graph, self).__init__()
+
         try:
-            return random.sample(neighbors, how_many)[0]
-        except ValueError:
-            return -1
+            with open(data_root.joinpath("V"), "r") as io:
+                self.vertex_ids = io.read().split('\n')
+        except FileNotFoundError:
+            raise
 
-    @staticmethod
-    def _make_node_entry(input_dir):
-        node_id_path = os.path.join(input_dir, 'node_ids')
+        # A set of the vertices, V
+        self.V = [
+            Vertex(
+                id_=vertex_id,
+                idx=idx,
+            )
+            for idx, vertex_id
+            in enumerate(self.vertex_ids)
+        ]
 
-        node_ids = list()
+        # A set of the edges, E
+        try:
+            with open(data_root.joinpath("E"), "r") as io:
+                edges = io.read().split("\n")
+        except FileNotFoundError:
+            raise
 
-        node_ids_io = open(node_id_path, 'r')
-        while True:
-            line = node_ids_io.readline()
-            if not line:
-                break
+        self.E = []
+        for edge in edges:
+            src_id, dst_id = edge.split(" ")
+            self.E.append(
+                Edge(
+                    src=self.V[self.vertex_ids.index(src_id)],
+                    dst=self.V[self.vertex_ids.index(dst_id)],
+                )
+            )
 
-            node_ids.append(line.strip())
-        node_ids_io.close()
-        return node_ids
+    def __len__(self):
+        return len(self.V)
 
-    @staticmethod
-    def _make_adjacency_matrix(nodes, config):
-        edge_list_path = os.path.join(config.input_dir, 'edgelist')
+    def __getitem__(
+            self,
+            idx: int
+    ) -> Vertex:
+        return self.V[idx]
 
-        A = list()
-
-        with open(edge_list_path) as edge_list_io:
-            while True:
-                edge = edge_list_io.readline()
-                if not edge:
-                    break
-                src, dst = edge.split()
-                A.append([nodes.index(src), nodes.index(dst)])
-                if config.undirected:
-                    A.append([nodes.index(dst), nodes.index(src)])
-        A = np.array(A)
-        A = np.ndarray(shape=A.shape, dtype=int, buffer=A).transpose()
-
-        return A
+    def get_neighbors(
+        self,
+        v: Vertex,
+    ) -> list[Vertex]:
+        return [edge.dst for edge in self.E if edge.src == v]

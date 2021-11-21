@@ -1,21 +1,42 @@
-class RandomWalker(object):
-    def __init__(self, graph):
+import torch
+
+from .graph import Graph
+from .types import Walk, Vertex
+
+
+class RandomWalker(torch.utils.data.Dataset):
+    def __init__(
+        self,
+        graph: Graph,
+        steps_per_walk: int,
+        **kwargs
+    ) -> None:
+        super(RandomWalker, self).__init__()
         self.graph = graph
-        self.traces = list()
+        self.steps_per_walk = steps_per_walk
 
-    def walk(self, source_idx, num_steps):
-        current_node_idx = source_idx
-        trace = [current_node_idx]
-        for step_count in range(1, num_steps+1):
-            current_node_idx = self.graph.get_random_neighbor(current_node_idx)
-            if current_node_idx == -1:  # Reaches to an end node.
+    def __getitem__(
+            self,
+            idx: int
+    ) -> Walk:
+        root_node = self.graph[idx]
+        walk = [root_node]
+        for _ in range(self.steps_per_walk):
+            u = self._get_random_neighbor(walk[-1])
+            if u is None:
                 break
-            trace.append(current_node_idx)
+            walk.append(self._get_random_neighbor(walk[-1]))
+        return [vertex.idx for vertex in walk]
 
-        return trace
+    def __len__(self):
+        return len(self.graph)
 
-    def process(self, walks_per_node, steps_per_walk):
-        for node_idx, node_id in enumerate(self.graph.nodes):
-            for i in range(walks_per_node):
-                trace = self.walk(node_idx, steps_per_walk)
-                self.traces.append(trace)
+    def _get_random_neighbor(
+            self,
+            v: Vertex,
+    ) -> Vertex or None:
+        U = self.graph.get_neighbors(v)
+        if len(U) == 0:
+            return None
+        random_idx = torch.randint(high=len(U), size=(1,))
+        return U[random_idx]

@@ -1,0 +1,8 @@
+n_dims: 16
+random_walker:
+  steps_per_walk: 4
+  walks_per_node: 5
+
+skipgram:
+  lr: 0.025
+  window_size: 2

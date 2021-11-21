@@ -1,70 +1,57 @@
 import torch
 import torch.nn as nn
 
+from .types import VertexSet
+
 
 class BinaryTree(nn.Module):
-    def __init__(self, num_nodes_in_graphs, num_dimensions):
-        """
-            Building a Binary Tree. 
-            The vector with d-dim will be assigned to the each nodes.
-            The vector will be used as not only a binary classifier, 
-            but also the embeddings of the node of the given graphs.
-        """
+    def __init__(
+        self,
+        V: VertexSet,
+        n_dims: int,
+    ):
         super(BinaryTree, self).__init__()
-        self.num_nodes_in_graphs = num_nodes_in_graphs
-        self.size = 0
-        self.depth = 0
-        while True:
-            num_children = 2 ** self.depth
-            self.size += num_children
-            if num_children >= num_nodes_in_graphs:
-                break
-            self.depth += 1
-        self.tree = nn.ModuleList(
-            [nn.Linear(num_dimensions, 1, bias=False) for i in range(self.size)])
+        self.num_vertices = len(V)
+        self.depth = len(bin(len(V)-1)) - 2
+        self.size = (1 << (self.depth+1)) - 1
+        self.nodes = nn.ModuleList([
+            nn.Linear(n_dims, 1, bias=False)
+            for i in range(self.size)
+        ])
 
-    def forward(self, collocation):
-        """
-            Hierarchical Softmax. Each node has its own embedding.
-            The probability of collocation is computed based the embeddings.
-            After the training is done,  the embeddings of the nodes 
-            in [0, num_nodeds_in_graphs) of the deepest layer is considered 
-            as the node embedddings of the given graph.
-        """
-        center_idx, window_idx = collocation
-        path = self.find_path(window_idx)
+    def forward(self, v_j_idx, u_k_idx):
+        v_j_idx_in_tree = v_j_idx + (1 << self.depth) - 1
+        u_k_idx_in_tree = u_k_idx + (1 << self.depth) - 1
+        path = self.find_path_from_root(u_k_idx_in_tree)
 
-        center_tree_idx, window_tree_idx = self.convert_into_tree_idx(
-            collocation)
-        center_embedding = self.tree[center_tree_idx].weight.data
+        x = self.nodes[v_j_idx_in_tree].weight.clone().data
 
-        probability_collocation = 1
-        tree_idx = 0
-        for direction, d in zip(path, range(self.depth)):
-            probability = self.tree[tree_idx](center_embedding).sigmoid()
-            probability_collocation = probability.mul(probability_collocation)
-            tree_idx = 2 * tree_idx + direction
-        return probability_collocation
+        prob_of_collocation = 1
+        for node_idx in path:
+            prob = self.nodes[node_idx](x).sigmoid()
+            prob_of_collocation = prob.mul(prob_of_collocation)
 
-    def convert_into_tree_idx(self, collocation):
-        return [self.graph_node_head + idx for idx in collocation]
+        return prob_of_collocation
 
-    def find_path(self, dst_idx):
-        dst_idx += 1
-        path = list()
-        for d in range(self.depth, 0, -1):
-            direction = 1  # choose left child
-            if (2 ** (d-1) < dst_idx):
-                direction = 2  # No, choose right child
-                dst_idx -= (2 ** (d-1))
-            path.append(direction)
+    def find_path_from_root(
+        self,
+        tgt_idx: int
+    ) -> list[int]:
+        '''
+        Find a path from the root node to the given target node which is a leaf node of the tree.
+        As the tree is supposed to be a perfect tree, preorder search is unnecessary to find the path.
+        args:
+            tgt_idx: Index of the target node.
+        return:
+            path: Series of the indices of the nodes in the path.
+
+        '''
+        path = [0]
+        for direction in bin(tgt_idx+1)[3:]:
+            path.append((path[-1] << 1) + (1 if direction == '0' else 2))
         return path
 
-    @property
-    def graph_node_head(self):
-        return sum([2 ** d for d in range(self.depth)])
-
     def get_node_embeddings(self):
-        target_modules = self.tree[self.graph_node_head: self.graph_node_head +
-                                   self.num_nodes_in_graphs]
-        return torch.stack([module.weight.data.squeeze().cpu() for module in target_modules]).numpy()
+        embeddings = [node.weight.data for node in self.nodes[(1 << self.depth)-1: (1 << self.depth)-1 + self.num_vertices]]
+        embeddings = torch.stack(embeddings)
+        return embeddings
