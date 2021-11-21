@@ -18,4 +18,4 @@ class TestRandomWalker(unittest.TestCase):
 
     def test_generate_a_random_walk_from_end_node(self):
         self.assertEqual(len(self.random_walker[0]), 1)
-        self.assertEqual(self.random_walker[0][0], self.graph.V[0])
+        self.assertEqual(self.random_walker[0][0], self.graph.V[0].idx)
