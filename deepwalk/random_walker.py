@@ -9,6 +9,7 @@ class RandomWalker(torch.utils.data.Dataset):
         self,
         graph: Graph,
         steps_per_walk: int,
+        **kwargs
     ) -> None:
         super(RandomWalker, self).__init__()
         self.graph = graph
@@ -25,7 +26,7 @@ class RandomWalker(torch.utils.data.Dataset):
             if u is None:
                 break
             walk.append(self._get_random_neighbor(walk[-1]))
-        return walk
+        return [vertex.idx for vertex in walk]
 
     def __len__(self):
         return len(self.graph)

@@ -11,6 +11,7 @@ class BinaryTree(nn.Module):
         n_dims: int,
     ):
         super(BinaryTree, self).__init__()
+        self.num_vertices = len(V)
         self.depth = len(bin(len(V)-1)) - 2
         self.size = (1 << (self.depth+1)) - 1
         self.nodes = nn.ModuleList([
@@ -50,8 +51,7 @@ class BinaryTree(nn.Module):
             path.append((path[-1] << 1) + (1 if direction == '0' else 2))
         return path
 
-
-def get_node_embeddings(self):
-    target_modules = self.tree[self.graph_node_head: self.graph_node_head +
-                               self.num_nodes_in_graphs]
-    return torch.stack([module.weight.data.squeeze().cpu() for module in target_modules]).numpy()
+    def get_node_embeddings(self):
+        embeddings = [node.weight.data for node in self.nodes[(1 << self.depth)-1: (1 << self.depth)-1 + self.num_vertices]]
+        embeddings = torch.stack(embeddings)
+        return embeddings

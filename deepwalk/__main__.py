@@ -1,7 +1,9 @@
 import argparse
-import os
+from pathlib import Path
 
-from numpy import save
+import numpy as np
+import torch
+import yaml
 
 from .binary_tree import BinaryTree
 from .graph import Graph
@@ -9,47 +11,67 @@ from .random_walker import RandomWalker
 from .skipgram import SkipGram
 
 
-def main(config):
-    graph = Graph(config)
+def main(args):
 
-    # Binary tree for applying hierarchical softmax.
+    if args.config_file.absolute().exists():
+        with open(args.config_file.absolute(), 'r') as config_io:
+            hparams = yaml.load(config_io, Loader=yaml.FullLoader)
+    else:
+        raise FileNotFoundError(f"Config file not found. {args.config_file.absolute()}")
+
+    graph = Graph(
+        data_root=args.data_root,
+    )
+    random_walker = RandomWalker(
+        graph=graph,
+        **hparams["random_walker"],
+    )
+
     binary_tree = BinaryTree(
-        num_nodes_in_graphs=len(graph.nodes),
-        num_dimensions=config.n_dims,
+        V=graph.V,
+        n_dims=hparams["n_dims"]
     )
 
-    walker = RandomWalker(graph)
-    walker.process(
-        walks_per_node=config.walks_per_node,
-        steps_per_walk=config.steps_per_walk,
-    )
+    device = torch.device('cuda') if args.gpu else torch.device('cpu')
 
     skipgram = SkipGram(
         binary_tree=binary_tree,
-        random_walks=walker.traces,
-        window_size=config.skipgram_window_size,
-        config=config,
+        random_walker=random_walker,
+        device=device,
+        batch_size=hparams["batch_size"],
+        ** hparams["skipgram"],
     )
-    skipgram.train()
+
+    for epoch in range(hparams["random_walker"]["walks_per_node"]):
+        skipgram.train()
 
     embeddings = binary_tree.get_node_embeddings()
-    save(os.path.join(config.output_dir), embeddings)
+    if not args.output_root.exists():
+        args.output_root.mkdir()
+    np.save(Path(args.output_root).joinpath('Z.npy'), embeddings.cpu().numpy())
+
+
+def get_parser():
+    parser = argparse.ArgumentParser(
+        prog="DeepWalk-Clone"
+    )
+    parser.add_argument(
+        "--data_root", type=Path,
+        help="Path to the data root directory."
+    )
+    parser.add_argument(
+        "--config_file", type=Path,
+        help="Path to the config file."
+    )
+    parser.add_argument(
+        "--output_root", type=Path,
+        help="Path to the output root directory."
+    )
+    parser.add_argument('--gpu', action='store_true')
+    return parser
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        prog="DeepWalk"
-    )
-    parser.add_argument("--input_path", type=str)
-    parser.add_argument("--output_path", type=str)
-    parser.add_argument("--walks_per_node", type=int, default=5)
-    parser.add_argument("--steps_per_walk", type=int, default=10)
-    parser.add_argument("--n_dims", type=int, default=16)
-    parser.add_argument("--skipgram_window_size", type=int, default=2)
-    parser.add_argument("--lr", type=float, default=0.025)
-    directionality = parser.add_mutually_exclusive_group()
-    directionality.add_argument("--undirected", action="store_true")
-    directionality.add_argument("--directed", action="store_true")
-    parser.add_argument('--gpu', type=str, default=None)
-    config = parser.parse_args()
-    main(config)
+    parser = get_parser()
+    args = parser.parse_args()
+    main(args)
