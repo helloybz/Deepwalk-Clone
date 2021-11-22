@@ -1,7 +1,7 @@
 from pathlib import Path
 import unittest
 
-from deepwalk.__main__ import get_parser, main
+from deepwalk.__main__ import get_parser, run
 
 
 class TestCLI(unittest.TestCase):
@@ -10,7 +10,7 @@ class TestCLI(unittest.TestCase):
         self.args = parser.parse_args(args=['--data_root', './tests/test_dataset', '--config_file', './tests/test_configs.yaml', '--output_root', './tests/test_output'])
 
     def test_run(self):
-        main(self.args)
+        run(self.args)
         output_root = Path('./tests/test_output')
         self.assertTrue(output_root.joinpath('Z.npy').exists())
 
