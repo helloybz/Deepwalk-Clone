@@ -33,10 +33,14 @@ class SkipGram(object):
             pin_memory=True,
         )
         self.window_size = window_size
+        self.losses = {}
 
     def train(self):
         self.binary_tree.train()
         self.binary_tree.to(self.device)
+
+        epoch = len(self.losses.keys())
+        self.losses[epoch] = list()
 
         for walk in self.dataloader:
             collocations = self._make_collocations(walk)
@@ -47,6 +51,8 @@ class SkipGram(object):
                 loss.backward()
                 self.optimizer.step()
 
+                self.losses[epoch].append(loss)
+
     def _make_collocations(self, random_walk):
         collocations = list()
         for idx_in_walk, v_j in enumerate(random_walk):
@@ -56,3 +62,12 @@ class SkipGram(object):
             for u_k in windowed_vertices:
                 collocations.append([v_j, u_k])
         return collocations
+
+    @property
+    def loss_history(self):
+        result = {}
+        for epoch in self.losses.keys():
+            result[epoch] = []
+            for loss in self.losses[epoch]:
+                result[epoch].append(loss.item())
+        return result

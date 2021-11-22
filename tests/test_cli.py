@@ -13,6 +13,7 @@ class TestCLI(unittest.TestCase):
         run(self.args)
         output_root = Path('./tests/test_output')
         self.assertTrue(output_root.joinpath('Z.npy').exists())
+        self.assertTrue(output_root.joinpath('loss.json').exists())
 
     def tearDown(self):
         import shutil
