@@ -1,5 +1,6 @@
 import { Box, Grid, Typography } from "@mui/material";
 
+import { data } from './content';
 
 export function Body() {
     return (
@@ -8,7 +9,7 @@ export function Body() {
             component={Box}
             sx={{
                 "padding": {
-                    "xs": '0 0',
+                    "xs": '0 1rem',
                     "md": '0 16rem'
                 }
             }}
@@ -21,18 +22,41 @@ export function Body() {
                         md: "3rem",
                     },
                     fontWeight: "600",
+                    lineHeight: {
+                        xs: "2.5rem",
+                        md: "3rem",
+                    },
+                    marginBottom: '1rem'
                 }}
             >
                 Deepwalk Clone
             </Grid>
 
-            <Grid item xs={12}>
-                <Typography
-                    sx={{
-                        color: 'rgb(243, 246, 249)',
+            {
+                data.map((section, i) => (
+                    <Grid item xs={12} key={i} sx={{
+                        marginBottom: "1rem"
                     }}>
-                </Typography>
-            </Grid>
+                        <Typography
+                            sx={{
+                                color: 'rgb(243, 246, 249)',
+                                fontSize: '2rem',
+                                lineHeight: '2rem',
+                                marginBottom: '0.5rem'
+                            }}>
+                            {section.header}
+                        </Typography>
+                        <Typography
+                            sx={{
+                                color: 'rgb(243, 246, 249)',
+                                fontSize: '1rem',
+                            }}>
+                            {section.content}
+                        </Typography>
+                    </Grid>
+                ))
+            }
+
 
         </Grid >
     )
