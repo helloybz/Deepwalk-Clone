@@ -11,7 +11,7 @@ from .random_walker import RandomWalker
 from .skipgram import SkipGram
 
 
-def main(args):
+def run(args):
 
     if args.config_file.absolute().exists():
         with open(args.config_file.absolute(), 'r') as config_io:
@@ -70,7 +70,11 @@ def get_parser():
     return parser
 
 
-if __name__ == "__main__":
+def main():
     parser = get_parser()
     args = parser.parse_args()
-    main(args)
+    run(args)
+
+
+if __name__ == "__main__":
+    main()
