@@ -58,7 +58,7 @@ class Graph(Dataset):
 
         self.E = []
         for edge in edges:
-            src_id, dst_id = edge.split(" ")
+            src_id, dst_id = edge.split("\t")
             self.E.append(
                 Edge(
                     src=self.V[self.vertex_ids.index(src_id)],
