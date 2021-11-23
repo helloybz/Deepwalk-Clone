@@ -23,7 +23,6 @@ n_dims: 128 # referred as d in the paper.
 random_walker:
   steps_per_walk: 40 # referred as t in the paper.
   walks_per_node: 80 # referred as r in the paper.
-
 skipgram:
   lr: 0.025
   window_size: 10 # referred as w in the paper.
