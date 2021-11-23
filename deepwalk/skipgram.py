@@ -4,6 +4,7 @@ from torch import random
 from torch.nn import BCELoss
 from torch.optim import SGD
 from torch.utils.data import DataLoader
+from tqdm import tqdm
 
 from deepwalk.binary_tree import BinaryTree
 from deepwalk.random_walker import RandomWalker
@@ -33,12 +34,16 @@ class SkipGram(object):
             pin_memory=True,
         )
         self.window_size = window_size
+        self.losses = {}
 
     def train(self):
         self.binary_tree.train()
         self.binary_tree.to(self.device)
 
-        for walk in self.dataloader:
+        epoch = len(self.losses.keys())
+        self.losses[epoch] = list()
+
+        for walk in tqdm(self.dataloader, desc=f'Epoch {epoch:3d} '):
             collocations = self._make_collocations(walk)
             for v_j, u_k in collocations:
                 self.optimizer.zero_grad()
@@ -46,6 +51,9 @@ class SkipGram(object):
                 loss = prob_collocation.add(1e-7).log().neg()
                 loss.backward()
                 self.optimizer.step()
+
+                self.losses[epoch].append(loss)
+        print(f'Epoch {epoch:3d} : Average loss: {(sum(self.losses[epoch])/len(self.losses[epoch])).item():7.3f}')
 
     def _make_collocations(self, random_walk):
         collocations = list()
@@ -56,3 +64,12 @@ class SkipGram(object):
             for u_k in windowed_vertices:
                 collocations.append([v_j, u_k])
         return collocations
+
+    @property
+    def loss_history(self):
+        result = {}
+        for epoch in self.losses.keys():
+            result[epoch] = []
+            for loss in self.losses[epoch]:
+                result[epoch].append(loss.item())
+        return result

@@ -1,4 +1,5 @@
 import argparse
+import json
 from pathlib import Path
 
 import numpy as np
@@ -48,6 +49,9 @@ def run(args):
     if not args.output_root.exists():
         args.output_root.mkdir()
     np.save(Path(args.output_root).joinpath('Z.npy'), embeddings.cpu().numpy())
+
+    with open(args.output_root.joinpath('loss.json'), 'w') as io:
+        json.dump(skipgram.loss_history, io)
 
 
 def get_parser():
