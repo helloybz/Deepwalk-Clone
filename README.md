@@ -5,7 +5,7 @@ Clone implementation of [deepwalk paper](https://arxiv.org/abs/1403.6652) in PyT
 
 ## Install
 #### Requirements:
-- python >= 3.8
+- python >= 3.9
 #### Commmand:
 ```bash
 pip install git+https://github.com/helloybz/deepwalk-clone.git
