@@ -8,7 +8,7 @@ Clone implementation of [deepwalk paper](https://arxiv.org/abs/1403.6652) in PyT
 - python >= 3.8
 #### Commmand:
 ```bash
-    pip install git+https://github.com/helloybz/deepwalk-clone.git
+pip install git+https://github.com/helloybz/deepwalk-clone.git
 ```
 ## Usage
 ```bash
