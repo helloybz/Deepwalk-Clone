@@ -34,40 +34,19 @@ class TestBinaryTree(unittest.TestCase):
             V=list(range(4)),
             n_dims=1
         )
-        collocations = torch.Tensor([
-            [3, 3],
-            [3, 4],
-            [3, 5],
-            [3, 6],
-        ])
-        self.assertEqual(
-            tree.find_path(collocations).tolist(),
-            [
-                [0, 1, 3],
-                [0, 1, 4],
-                [0, 2, 5],
-                [0, 2, 6],
-            ]
-        )
+        self.assertEqual(tree.find_path_from_root(3), [0, 1, 3])
+        self.assertEqual(tree.find_path_from_root(4), [0, 1, 4])
+        self.assertEqual(tree.find_path_from_root(5), [0, 2, 5])
+        self.assertEqual(tree.find_path_from_root(6), [0, 2, 6])
+
         tree = BinaryTree(
             V=list(range(8)),
             n_dims=1
         )
-        collocations = torch.Tensor([
-            [8, 7],
-            [8, 8],
-            [8, 9],
-            [8, 10],
-        ])
-        self.assertEqual(
-            tree.find_path(collocations).tolist(),
-            [
-                [0, 1, 3, 7],
-                [0, 1, 3, 8],
-                [0, 1, 4, 9],
-                [0, 1, 4, 10],
-            ]
-        )
+        self.assertEqual(tree.find_path_from_root(7), [0, 1, 3, 7])
+        self.assertEqual(tree.find_path_from_root(8), [0, 1, 3, 8])
+        self.assertEqual(tree.find_path_from_root(9), [0, 1, 4, 9])
+        self.assertEqual(tree.find_path_from_root(10), [0, 1, 4, 10])
 
     def test_hierarchical_softmax_forward(self):
         tree = BinaryTree(
@@ -75,8 +54,8 @@ class TestBinaryTree(unittest.TestCase):
             n_dims=1
         )
 
-        self.assertGreaterEqual(tree(torch.Tensor([[0, 3]])), 0)
-        self.assertLessEqual(tree(torch.Tensor([[0, 3]])), 1)
+        self.assertGreaterEqual(tree(0, 3), 0)
+        self.assertLessEqual(tree(0, 3), 1)
 
     def test_forward_minibathed_collocations(self):
         tree = BinaryTree(

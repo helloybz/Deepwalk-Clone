@@ -33,5 +33,5 @@ class TestSkipgram(unittest.TestCase):
         for epoch in range(num_epochs):
             self.skipgram.train()
 
-        self.assertTrue(hasattr(self.skipgram, "losses"))
+        self.assertTrue(hasattr(self.skipgram, "loss_history"))
         self.assertEqual(list(self.skipgram.loss_history.keys()), list(range(num_epochs)))
