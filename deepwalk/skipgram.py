@@ -55,7 +55,7 @@ class SkipGram(object):
 
             self.losses[epoch].append(loss)
         self.losses[epoch] = [loss.item() for loss in self.losses[epoch]]
-        print(f'Epoch {epoch:3d} : Average loss: {(sum(self.losses[epoch])/len(self.losses[epoch])).item():7.3f}')
+        print(f'Epoch {epoch:3d} : Average loss: {(sum(self.losses[epoch])/len(self.losses[epoch])):7.3f}')
 
     def _make_collocations(self, random_walk):
         collocations = list()
@@ -76,5 +76,5 @@ class SkipGram(object):
         for epoch in self.losses.keys():
             result[epoch] = []
             for loss in self.losses[epoch]:
-                result[epoch].append(loss.item())
+                result[epoch].append(loss)
         return result
