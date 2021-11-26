@@ -69,6 +69,10 @@ class BinaryTree(nn.Module):
         return path
 
     def get_node_embeddings(self):
-        embeddings = [node.weight.data for node in self.nodes[(1 << self.depth)-1: (1 << self.depth)-1 + self.num_vertices]]
+        embeddings = [
+            node[0].weight.data
+            for node
+            in self.nodes[(1 << self.depth)-1: (1 << self.depth)-1 + self.num_vertices]
+        ]
         embeddings = torch.stack(embeddings)
         return embeddings
