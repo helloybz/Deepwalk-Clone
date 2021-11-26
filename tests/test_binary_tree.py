@@ -1,6 +1,6 @@
 import unittest
-from deepwalk import binary_tree
-from pathlib import Path
+
+import torch
 
 from deepwalk.binary_tree import BinaryTree
 
@@ -56,3 +56,42 @@ class TestBinaryTree(unittest.TestCase):
 
         self.assertGreaterEqual(tree(0, 3), 0)
         self.assertLessEqual(tree(0, 3), 1)
+
+    def test_forward_minibathed_collocations(self):
+        tree = BinaryTree(
+            V=list(range(4)),
+            n_dims=1
+        )
+        collocations = [
+            [1, 0],
+            [1, 2],
+            [1, 3],
+            [3, 2],
+            [3, 1],
+        ]
+        minibatched_collocations = torch.Tensor(collocations)
+        minibatched_probs = tree(minibatched_collocations)
+        self.assertTrue(minibatched_probs.shape, torch.Size([3]))
+
+    def test_backward_minibathed_collocations(self):
+        tree = BinaryTree(
+            V=list(range(4)),
+            n_dims=1
+        )
+        collocations = [
+            [1, 0],
+            [1, 2],
+            [1, 3],
+            [3, 2],
+            [3, 0],
+        ]
+        minibatched_collocations = torch.Tensor(collocations)
+        minibatched_probs = tree(minibatched_collocations)
+        loss = minibatched_probs.log().neg().mean()
+        loss.backward()
+
+        for i, node in enumerate(tree.nodes):
+            if i in [0, 1, 2, 3, 5, 6]:
+                self.assertIsInstance(node[0].weight.grad, torch.Tensor)
+            else:
+                self.assertTrue(node[0].weight.grad == None)
