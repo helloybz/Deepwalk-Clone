@@ -44,17 +44,15 @@ class SkipGram(object):
         self.losses[epoch] = list()
 
         for walk in tqdm(self.dataloader, desc=f'Epoch {epoch:3d} '):
-            if len(walk) == 1:
-                continue
             collocations = self._make_collocations(walk)
-            self.optimizer.zero_grad()
-            prob_collocation = self.binary_tree(collocations)
-            loss = prob_collocation.add(1e-7).log().neg().mean()
-            loss.backward()
-            self.optimizer.step()
+            for v_j, u_k in collocations:
+                self.optimizer.zero_grad()
+                prob_collocation = self.binary_tree(v_j, u_k)
+                loss = prob_collocation.add(1e-7).log().neg()
+                loss.backward()
+                self.optimizer.step()
 
-            self.losses[epoch].append(loss)
-        self.losses[epoch] = [loss.item() for loss in self.losses[epoch]]
+                self.losses[epoch].append(loss)
         print(f'Epoch {epoch:3d} : Average loss: {(sum(self.losses[epoch])/len(self.losses[epoch])).item():7.3f}')
 
     def _make_collocations(self, random_walk):
@@ -62,13 +60,10 @@ class SkipGram(object):
         for idx_in_walk, v_j in enumerate(random_walk):
             windowed_vertices = \
                 random_walk[max(idx_in_walk-self.window_size, 0): idx_in_walk] + \
-                random_walk[idx_in_walk+1:min((idx_in_walk+self.window_size)+1, len(random_walk))]
+                random_walk[idx_in_walk+1:min((idx_in_walk+self.window_size)+1, len(random_walk)-1)]
             for u_k in windowed_vertices:
-                collocations.append(torch.Tensor([v_j, u_k]))
-        if collocations:
-            return torch.stack(collocations)
-        else:
-            return torch.Tensor(collocations)
+                collocations.append([v_j, u_k])
+        return collocations
 
     @property
     def loss_history(self):
