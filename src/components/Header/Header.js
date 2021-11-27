@@ -17,8 +17,13 @@ export function Header() {
                         sx={{
                             fontSize: 'h5.fontSize',
                             fontWeight: '600',
-                            color: 'text.dark'
-                        }}>
+                            color: 'text.dark',
+                            ":hover": {
+                                cursor: "pointer",
+                            }
+                        }}
+                        onClick={() => (window.location.href = '/')}
+                    >
                         helloybz.
                     </Typography>
                 </Toolbar>
