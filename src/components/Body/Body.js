@@ -31,7 +31,6 @@ export function Body() {
             >
                 Deepwalk Clone
             </Grid>
-
             {
                 data.map((section, i) => (
                     <Grid item xs={12} key={i} sx={{
@@ -42,14 +41,15 @@ export function Body() {
                                 color: 'rgb(243, 246, 249)',
                                 fontSize: '2rem',
                                 lineHeight: '2rem',
-                                marginBottom: '0.5rem'
+                                marginBottom: '0.5rem',
+                                fontWeight: '1000'
                             }}>
                             {section.header}
                         </Typography>
                         <Typography
                             sx={{
                                 color: 'rgb(243, 246, 249)',
-                                fontSize: '1rem',
+                                fontSize: '1.2rem',
                             }}>
                             {section.content}
                         </Typography>
