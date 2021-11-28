@@ -43,6 +43,21 @@ def run(args):
     )
 
     for epoch in range(hparams["random_walker"]["walks_per_node"]):
+        if args.checkpoint_period > 0 and epoch % args.checkpoint_period == 0:
+            checkpoint_root = args.output_root.joinpath('checkpoint', f'{epoch}')
+            checkpoint_root.mkdir(parents=True, exist_ok=True)
+            # save embeddings
+            np.save(
+                file=checkpoint_root.joinpath('Z.npy'),
+                arr=binary_tree.get_node_embeddings().numpy(),
+            )
+            # save context
+            context = {
+                'optimizer': skipgram.optimizer.state_dict(),
+                'model': binary_tree.state_dict(),
+                'epoch': epoch,
+            }
+            torch.save(context, checkpoint_root.joinpath(f'{epoch}.pt'))
         skipgram.train()
 
     embeddings = binary_tree.get_node_embeddings()
@@ -69,6 +84,10 @@ def get_parser():
     parser.add_argument(
         "--output_root", type=Path,
         help="Path to the output root directory."
+    )
+    parser.add_argument(
+        "--checkpoint_period", type=int, default=0,
+        help="Period of making checkpoint in epoch. 0 for no checkpoints."
     )
     parser.add_argument('--gpu', action='store_true')
     return parser
