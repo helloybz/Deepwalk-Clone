@@ -1,5 +1,5 @@
 import { Box, Grid, Typography } from "@mui/material";
-
+import { GitHub } from "@mui/icons-material"
 import { Plot } from "./Plot"
 import { data, plot } from './content';
 
@@ -31,6 +31,15 @@ export function Body() {
                 }}
             >
                 Deepwalk Clone
+                <GitHub
+                    sx={{
+                        marginLeft: "2rem",
+                        fontSize: "2rem",
+                        ":hover": { cursor: "pointer" }
+                    }}
+                    onClick={() => (window.location.href = "https://github.com/helloybz/deepwalk-clone")}
+                />
+
             </Grid>
             <Grid item xs={12} lg={6} sx={{
                 marginBottom: "1rem",
