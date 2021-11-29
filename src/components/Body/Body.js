@@ -1,6 +1,7 @@
 import { Box, Grid, Typography } from "@mui/material";
 
-import { data } from './content';
+import { Plot } from "./Plot"
+import { data, plot } from './content';
 
 export function Body() {
     return (
@@ -30,6 +31,15 @@ export function Body() {
                 }}
             >
                 Deepwalk Clone
+            </Grid>
+            <Grid item xs={12} lg={6} sx={{
+                marginBottom: "1rem",
+                height: {
+                    xs: "20rem",
+                    lg: "40rem",
+                }
+            }}>
+                <Plot data={plot.zachary} title='Zachary Karate Club' />
             </Grid>
             {
                 data.map((section, i) => (
