@@ -7,11 +7,10 @@ export const data = [
         "content": {
             'type': 'list',
             'eng': `\
-                This project implements the Deepwalk algorithm based on Deepwalk's original paper without reference to the original source code.
-                I've focused as much as possible on implementing the same Deepwalk described in the paper.
-                Also, the experiment which is also done in the original paper, is conducted to check how my implementation is done well compared with the original work.
-                I tried to implement the algorithms using as few libraries as possible.
-                I've mainly used PyTorch for the implements.`,
+                Implements Deepwalk algorithm based on the original paper without reference to the original source code.
+                Focused on implementing the same Deepwalk described in the paper.
+                Compared with the original Deepwalk by node classification experiment.
+                PyTorch is mainly used for this implementation.`,
             'kor': `\
                 Deepwalk 논문을 구현한 프로젝트입니다.
                 본 논문에서 서술한 내용을 가능한 충실히 구현했습니다.

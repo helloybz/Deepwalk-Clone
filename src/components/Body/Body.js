@@ -50,9 +50,13 @@ export function Body() {
                     },
                     marginBottom: '1rem'
                 }}
+                container
             >
-                Deepwalk Clone
-                <Button
+                <Grid item xs={12} lg={'auto'}>
+                    Deepwalk-Clone
+                </Grid>
+                <Grid
+                    component={Button}
                     sx={{
                         marginLeft: "2rem",
                         fontSize: "2rem",
@@ -65,7 +69,7 @@ export function Body() {
                     onClick={() => (window.location.href = "https://github.com/helloybz/deepwalk-clone")}
                 >
                     <GitHub />
-                </Button>
+                </Grid>
 
             </Grid>
             <Grid item xs={12} lg={12} sx={{
