@@ -37,6 +37,7 @@ skipgram:
  - 80 walks per node
  - 10 window size (10+10+1 for both directions.)
 ### Loss graph
+![loss_for_80_epochs](./assets/loss_80.jpg)
 ### Multi-Label Classification
  - Logistic regression is used.
  - Train:Test ratio varies from 1:9 to 9:1.
