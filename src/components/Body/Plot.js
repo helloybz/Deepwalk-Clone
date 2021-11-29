@@ -15,8 +15,8 @@ export function Plot({ data, title }) {
                     color: "white",
                 },
                 legend: {
-                    position: 'bottom',
-                    textStyle: { color: 'white', fontSize: "2rem" }
+                    position: "right",
+                    textStyle: { color: 'white', fontSize: "2rem" },
                 },
                 backgroundColor: theme.palette.background.dark,
                 colors: ["magenta", "yellow", "grey", "cyan"],
