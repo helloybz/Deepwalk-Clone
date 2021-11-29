@@ -30,13 +30,28 @@ skipgram:
 ```
 
 ## Experiments
+ Cora dataset, a citation network, is used for the experiments.
+ Both the original Deepwalk and the cloned Deepwalk used same hyper parameters as introduced in the original one's paper.
+ - 128 dimensions
+ - 40 steps per walk
+ - 80 walks per node
+ - 10 window size (10+10+1 for both directions.)
+### Loss graph
 ### Multi-Label Classification
- Cora dataset\
- logistic regression varying train split's percentage. (from 10% to 90%)\
- Scores are computed as averaged score after 10 repeated runs.\
- Column name means the percentage of training data split.
+ - Logistic regression is used.
+ - Train:Test ratio varies from 1:9 to 9:1.
+ - Metrics are averaged after 10 runs.
 #### Micro F1
+Column name means the percentage of train split.
 | Method         | 10%   | 20%   | 30%   | 40%   | 50%   | 60%   | 70%   | 80%   | 90%   |
 | -------------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
-| Deepwalk-Clone | 0.373 | 0.462 | 0.500 | 0.504 | 0.513 | 0.539 | 0.552 | 0.550 | 0.543 |
+| Deepwalk-Clone | 0.219 | 0.242 | 0.282 | 0.335 | 0.347 | 0.342 | 0.360 | 0.377 | 0.352 |
 | Deepwalk       | 0.200 | 0.206 | 0.215 | 0.223 | 0.213 | 0.236 | 0.242 | 0.256 | 0.247 |
+
+
+#### Macro F1
+Column name means the percentage of train split.
+| Method         | 10%   | 20%   | 30%   | 40%   | 50%   | 60%   | 70%   | 80%   | 90%   |
+| -------------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+| Deepwalk-Clone | 0.411 | 0.421 | 0.427 | 0.457 | 0.478 | 0.468 | 0.477 | 0.511 | 0.454 |
+| Deepwalk       | 0.135 | 0.138 | 0.144 | 0.132 | 0.122 | 0.136 | 0.128 | 0.125 | 0.108 |
