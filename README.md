@@ -29,7 +29,14 @@ skipgram:
 
 ```
 
-## Comparison with the original work
-- Multi-Label Classification
-  - TBA
-
+## Experiments
+### Multi-Label Classification
+ Cora dataset\
+ logistic regression varying train split's percentage. (from 10% to 90%)\
+ Scores are computed as averaged score after 10 repeated runs.\
+ Column name means the percentage of training data split.
+#### Micro F1
+| Method         | 10%   | 20%   | 30%   | 40%   | 50%   | 60%   | 70%   | 80%   | 90%   |
+| -------------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+| Deepwalk-Clone | 0.373 | 0.462 | 0.500 | 0.504 | 0.513 | 0.539 | 0.552 | 0.550 | 0.543 |
+| Deepwalk       | 0.200 | 0.206 | 0.215 | 0.223 | 0.213 | 0.236 | 0.242 | 0.256 | 0.247 |
