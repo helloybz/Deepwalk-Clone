@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/deepwalk-clone/static/css/main.ff0e889c.chunk.css",
-    "main.js": "/deepwalk-clone/static/js/main.d3520418.chunk.js",
-    "main.js.map": "/deepwalk-clone/static/js/main.d3520418.chunk.js.map",
+    "main.js": "/deepwalk-clone/static/js/main.af8646ce.chunk.js",
+    "main.js.map": "/deepwalk-clone/static/js/main.af8646ce.chunk.js.map",
     "runtime-main.js": "/deepwalk-clone/static/js/runtime-main.c0d2c4ba.js",
     "runtime-main.js.map": "/deepwalk-clone/static/js/runtime-main.c0d2c4ba.js.map",
     "static/js/2.aab46e4f.chunk.js": "/deepwalk-clone/static/js/2.aab46e4f.chunk.js",
@@ -17,6 +17,6 @@
     "static/js/runtime-main.c0d2c4ba.js",
     "static/js/2.aab46e4f.chunk.js",
     "static/css/main.ff0e889c.chunk.css",
-    "static/js/main.d3520418.chunk.js"
+    "static/js/main.af8646ce.chunk.js"
   ]
 }
