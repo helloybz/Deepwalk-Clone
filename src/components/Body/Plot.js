@@ -22,13 +22,13 @@ export function Plot({ data, title }) {
                 colors: ["magenta", "yellow", "grey", "cyan"],
                 hAxis: {
                     "gridlines": {
-                        "color": theme.palette.divider.dark,
+                        "color": theme.palette.border.dark,
                     },
                     "minorGridlines": {
-                        "color": theme.palette.divider.dark,
+                        "color": theme.palette.border.dark,
                     },
                     "baseline": {
-                        "color": theme.palette.divider.dark,
+                        "color": theme.palette.border.dark,
                     },
                     viewWindow: {
                         max: 1.5,
@@ -37,13 +37,13 @@ export function Plot({ data, title }) {
                 },
                 vAxis: {
                     "gridlines": {
-                        "color": theme.palette.divider.dark,
+                        "color": theme.palette.border.dark,
                     },
                     "minorGridlines": {
-                        "color": theme.palette.divider.dark,
+                        "color": theme.palette.border.dark,
                     },
                     "baseline": {
-                        "color": theme.palette.divider.dark,
+                        "color": theme.palette.border.dark,
                     },
                     viewWindow: {
                         max: 2.5,

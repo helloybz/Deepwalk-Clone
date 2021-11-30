@@ -119,8 +119,50 @@ export const data = [
         }
     },
     {
-        "header": { 'eng': 'Conclusion', 'kor': ' 결론' },
-        "content": { 'type': 'list', 'eng': "TBA", 'kor': '추가예정' }
+        "header": { 'eng': 'Experiment: Node Classification', 'kor': '실험: 노드 분류' },
+        "content": {
+            'type': 'list',
+            'eng': `\
+            CORA datset, citation network, is used for the experiment.
+            Same hyper parameters as decribed in the paper are used to both the original Deepwalk and the cloned Deepwalk.
+            128 dimensions for the vector representations
+            40 steps per walk.
+            80 walks per node.
+            10 window size. (10+10+1 when counting for both directions)
+            Logistic Regression is used for the classification.
+            The ratio of train and test split is varies from 1:9 to 9:1. 
+            The scores are averaged after 10 runs.            `,
+            'kor': `\
+            문헌 참조 네트워크인 CORA 데이터셋을 실험에 사용했습니다.
+            Deepwalk와 Deepwalk-Clone 모두 Deepwalk 원 논문에서 사용된 하이퍼 파라미터 그대로 사용했습니다.
+            128차원의 벡터 표현
+            RandomWalk 당 최대 40걸음
+            Node 당 RandomWalk 샘플링 80회
+            슬라이딩 윈도우의 크기 10
+            분류 실험의 분류기로는 Logistic Regression을 사용했습니다.
+            Train set와 Test set의 분할 비율은 1:9부터 9:1까지 적용했습니다.
+            같은 조건의 실험을 10번 반복한 후 평균 점수를 계산했습니다.
+            `,
+        }
+    }
+    ,
+    {
+        "header": { 'eng': 'Experiment Result', 'kor': '실험 결과' },
+        "content": {
+            'type': 'table',
+            'eng': {
+                'title': 'micro-F1',
+                'header': ["Method", "10 %", "20 %", "30 %", "40 %", "50 %", "60 %", "70 %", "80 %", "90 %"],
+                'rows': [
+                    ["Deepwalk-Clone", "0.219", "0.242", "0.282", "0.335", "0.347", "0.342", "0.360", "0.377", "0.352"],
+                    ["Deepwalk", "0.200", "0.206", "0.215", "0.223", "0.213", "0.236", "0.242", "0.256", "0.247"],
+                ]
+            },
+            'kor': {
+                'header': ["Deepwalk-Clone", "10 %", "20 %", "30 %", "40 %", "50 %", "60 %", "70 %", "80 %", "90 %"],
+                'rows': [["Method", "10 %", "20 %", "30 %", "40 %", "50 %", "60 %", "70 %", "80 %", "90 %"], ["Method", "10 %", "20 %", "30 %", "40 %", "50 %", "60 %", "70 %", "80 %", "90 %"]]
+            },
+        }
     },
 ]
 

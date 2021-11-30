@@ -1,4 +1,4 @@
-import { Grid, List, ListItem, Typography } from "@mui/material";
+import { Grid, List, ListItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 
 export function Content({ type, content, language }) {
 
@@ -35,6 +35,35 @@ export function Content({ type, content, language }) {
                     </Grid>
                 ))}
             </Grid>
+        )
+    } else if (type === 'table') {
+        return (
+            <div>
+                <Typography
+                    variant="h5">{content.eng.title}</Typography>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            {content.eng.header.map((name, i) => (
+                                <TableCell key={i}>{name}</TableCell>
+                            ))}
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {content.eng.rows.map((row, i) => (
+                            <TableRow key={i}>
+                                {row.map((val, j) => (
+                                    <TableCell key={j}>{val}</TableCell>
+                                ))}
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
+        )
+    } else {
+        return (
+            <div>Error</div>
         )
     }
 }

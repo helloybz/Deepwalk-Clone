@@ -10,7 +10,7 @@ export function Header() {
                     bgcolor: 'background.dark',
                     borderBottomStyle: 'solid',
                     borderBottomWidth: '1px',
-                    borderBottomColor: 'divider.dark',
+                    borderBottomColor: 'border.dark',
                 }}>
                 <Toolbar>
                     <Typography

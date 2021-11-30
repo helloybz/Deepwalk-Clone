@@ -63,7 +63,7 @@ export function Body() {
                         fontSize: "2rem",
                         borderStyle: 'solid',
                         borderWidth: '1px',
-                        borderColor: 'divider.dark',
+                        borderColor: 'border.dark',
                         borderRadius: '5rem',
                         ":hover": { cursor: "pointer" }
                     }}

@@ -14,8 +14,8 @@ export const theme = createTheme({
         text: {
             dark: "rgb(243, 246, 249)"
         },
-        divider: {
-            dark: "rgb(24, 47, 75)"
+        border: {
+            dark: "#182f4b"
         }
     },
 });
