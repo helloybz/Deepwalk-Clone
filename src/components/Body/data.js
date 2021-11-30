@@ -27,30 +27,37 @@ export const data = [
             'type': 'paragraphs',
             'eng': `\
                 Deepwalk is one of the most popular node embedding algorithms.\
-                It learns structural information from random walks sampled from a given network.\
-                The algorithm composed of two parts: populating random walks from a given network and running Skipgram.\
+                The algorithm consists of two parts: 1) populating random walks from a given network and 2) running Skipgram.\
+                
+                Given a network, we can think of a random walk starting from a random node in the network.\
+                The network's structural information around the starting node is incorporated in the random walk.\
+                If a bunch of random walks are populated, starting from any random nodes, \
+                we can think that the network's entire structural information is almost captured in them.\
 
-                Deepwalk considers the random walks as sentences and the nodes as words, \
-                and applies Skipgram, a language modeling algorithm, to the randomwalks to obtain vector representations of the nodes.\
+                Deepwalk considers the random walks as sentences and the nodes in them as words, \
+                and then applies Skipgram, a language modeling algorithm, to the random walks.\
+                Skipgram's objective function is a likelihood of the nodes' vector representation given their adjacent nodes.\
 
-                The objective function is a likelihood of being contexts of the node given the node's vector representation if given.\
                 But the function is not feasible due to the expensive time complexity for \
                 computing the probability of collocation for the every node.\
-                By adopting hierarchical softmax for that, the time complexity reduces in logarithms scale.\
-                After optimizing this objective function, the representations of the nodes incorporate the network's structure.
-        `, 'kor': `\
+                By adopting hierarchical softmax for that, the time complexity reduces to logarithms scale.\
+                After maximizing this objective function, the vector representations of the nodes are optimized to be incorporating the network's structure.\
+                `,
+            'kor': `\
                 Deepwalk는 대표적인 node embedding 알고리즘 중 하나입니다.\
+                Deepwalk 알고리즘은 크게 두 부분으로 이루어져 있습니다.\
+                첫째는 주어진 네트워크에서 Random Walk 샘플들을 많이 확보하는 것이고, 둘째는 Skipgram을 적용하는 것입니다.\
 
-                Deepwalk 알고리즘은 크게 두 부분으로 나누어 볼 수 있습니다.\
-                첫째는 주어진 네트워크에서 random walk를 여러번 시행하는 것이고, 둘째는 Skipgram을 적용하는 것입니다.\
-                임의의 네트워크가 주어졌을 때, 그 네트워크에서 Random walk를 여러 번 시행에서 얻은 walk 샘플들로부터 그래프의 구조적인 정보를 학습합니다.\
-                Walk 샘플들을 문장인 것처럼, node들을 단어인 것처럼 간주하고, 언어 모델링 알고리즘인 Skipgram을 적용합니다.\
-                그 결과, 네트워크의 구조적인 정보가 녹아있는 Vector 표현들을 구할 수 있고, 이들을 Node들의 Embedding으로 정합니다.\
+                어떤 네트워크가 주어졌을 때, 그 네트워크에서 아무 Node를 하나 골라서 그 Node에서 시작하는 Random Walk를 한번 시행했다고 생각해보겠습니다.\
+                그 하나의 Random Walk 샘플에는 그 Node 주변의 구조적인 정보가 담겨있습니다.\
+                만약 이런 과정을 모든 Node에 대해 무수히 많이 시행한다면, 그렇게 얻은 Random Walk 샘플들에는 네트워크의 전체적인 구조적인 정보가 담겨있다고 생각할 수 있습니다.\
+                
+                수많은 Random Walk 샘플들을 문장으로, 그 안의 Node들을 단어로 간주하고, 언어 모델링 알고리즘인 Skipgram을 적용합니다.\
+                어떤 Node의 주변 정보가 주어졌을 때, 그 Node의 vector 표현형의 우도를 목적함수로 삼습니다.\
+                이 목적함수를 최대한 크게 하도록 vector 표현형들을 최적화하면, 네크워트의 구조적인 정보를 잘 반영한 Embedding을 얻는 것입니다.\
 
-                이때 목적함수를 정의하기로, 어떤 node의 vector 표현형이 주어졌을 때, 그 node 주변에서 관찰되는 이웃 node들의 우도(likelihood)입니다.\
                 그런데 이 목적함수를 계산하는 데 걸리는 시간이 네트워크 내 존재하는 node들의 숫자에 비례하기 때문에, 현실적으로 계산이 어렵습니다.\
                 이 논문에서는 목적함수 계산에 Hierarchical Softmax를 도입해서, log(node들의 숫자)에 비례한 시간안에 계산을 해냅니다.\
-                이러한 방식으로 네트워크 내 존재하는 node들의 vector 표현형을 그 구조정보를 담도록 최적화합니다.\
         `
         }
     },
@@ -59,23 +66,56 @@ export const data = [
         "content": {
             'type': 'paragraphs',
             'eng': `\
-                First, I've implemented a graph structure and a random-walker. Both inherit PyTorch's Dataset class. Graph emits its node indexed with a given argument.\
-                RandomWalker wraps an instance of Graph and generate a random walk on the graph starting from the given indexed node.\
-                The author has populated a bunch of random walk samples before running Skipgram. \
-                But in this clone project, the random walks can be sampled not only during training time also in multi-processed manner by using PyTorch.\
+                First, I've implemented a graph structure, class Graph.\
+                It inherits PyTorch's Dataset class, and emits one of its nodes by a given index.\
+                Furthermore, the Graph has a method that returns the adjacent nodes of the given node.\
 
-                Second, a BinaryTree class is implemented for hierarchical softmax. \
-                While hierarchical softmax is an optmizing algorithm rather than a neural network architecture, \
-                BinaryTree class inherits PyTorch's nn.Module class because trainable binary classifiers are allocated to each node in the tree.\
-                The vertices of the graph are allocated to the leaf nodes from left, and then the trainable parameters of the leaf nodes are used as the optimized vector representation of the nodes.\
-                The class finds a path from the root node to the target leaf node, then the path are used to indexing the classifiers.\
+                Second, class RandomWalker, kind of wrapper class of the class Graph, is implemented.\
+                It also inherits PyTorch's Dataset class, and generates a random walk on the graph starting from the given node.\
+                The author of the original paper has populated random walk samples before running Skipgram, using multi-processing\
+                But in this project, the random walks can be sampled not only during training time also in parallel by using PyTorch.\
 
-                Third, a Skipgram class is implemented.\
-                While the author has used 'gensim' library to apply Skipgram, I implement it myself using PyTorch for practicing pursose.\
-                It captures the local structure of the graph by sliding window on the random walk samples,\
-                then populates pairs of the nodes collocating in the window.\
-                Also, it updates the BinaryTree's parameter for the probabilty of being the pairs to be maximized.\
-            `, 'kor': ``
+                Third, a class BinaryTree is implemented for hierarchical softmax.\
+                While hierarchical softmax is an optimizing algorithm rather than a neural network architecture,\
+                the BinaryTree class inherits PyTorch's nn.Module class because trainable binary classifiers should be allocated to each node in the tree.\
+                The  classifiers would be optimized to maximize the likelihood.\
+                The vertices of the graph are also allocated to the leaf nodes from left.\
+                After the classifiers are optimized, the weights of the classifiers of the leaf nodes are used as the optimized vector representation of the nodes.\
+                The class has a method that finds a path from the root node to the target leaf node, then the nodes in the path are used to choose the classifiers to be optimized.\
+
+                Finally, a Skipgram class is implemented.\
+                While the author has used 'gensim' library to use a ready-made Skipgram,\
+                 I've implement it myself in practicing pursose.\
+                The Skipgram class is kind of 'Trainer' class.\
+                It prepares all the things neccesary for training, such as PyTorch's optimizer and DataLoader.
+                It also has a method that slides window on the given random walks samples to cature the local structural information.\
+                Then, it updates the BinaryTree's classifiers for the probabilty of being the pairs to be maximized.\
+            `, 'kor': `\
+                첫째로, Graph 클래스를 만들었습니다.\
+                Graph 클래스는 PyTorch의 Dataset 클래스를 상속받으며, forward method로 하여금 주어진 index에 해당하는 노드를 반환하도록 했습니다.\
+                Random Walk를 시행할 때 용이하도록, 주어진 노드의 이웃 노드들을 반환하는 method도 추가로 만들었습니다.\
+
+                둘째로, Graph 클래스의 Wrapper class 역할을 하는 RandomWalker 클래스를 만들었습니다.\
+                이 클래스도 역시 PyTorch의 Dataset class를 상속받으며, forward method로 하여금 주어진 노드로 부터 시작하는 RandomWalk 샘플 하나를 반환하도록 합니다.\
+                Deepwalk 원 논문의 저자는 학습에 사용할 RandomWalk 샘플들을 미리 확보하는 방법을 선택했습니다만,\
+                이 프로젝트에서는 PyTorch를 사용함으로서 학습과 동시에 RandomWalk를 생성할 수 있으며 또, 병렬적으로 생성할 수도 있습니다.\
+
+                셋째로, 계층적 Softmax를 구현하기위한 BinaryTree 클래스를 만들었습니다.\
+                물론, 계층적 Softmax는 최적화 알고리즘의 일종이지, Neural network 구조는 아닙니다만,\
+                Tree의 노드마다 학습가능한 binary classifier를 붙여야 하기 때문에, 구현 편의 상 PyTorch의 nn.Module을 상속받도록 만들었습니다.\
+                Tree의 잎 노드에는 가장 왼쪽의 노드부터 Graph의 Vertex들을 순서대로 할당합니다.\
+                Tree의 뿌리 노드에서 시작해 목표로 하는 잎 노드까지의 경로를 탐색하는 method를 구현했습니다.\
+                이 경로 위의 노드에 달려있는 classifier를 앞서 소개한 '우도'를 최대로 하도록 최적화합니다.\
+                최적화가 끝나면, 잎 노드들의 classifier의 최적화된 가중치가, 할당된 vertex의 vector 표현형이 됩니다.\
+
+                마지막으로, Skipgram 클래스를 만들었습니다.\
+                Skipgram 클래스는 일종의 Trainer 클래스입니다.\
+                Optimizer, DataLoader 등 학습에 필요한 것들을 모두 갖고 있습니다.\
+                원 저자는 이미 잘 만들어진 Skipgram을 이용하기 위해 'gensim' 라이브러리를 활용했습니다만,\
+                이 프로젝트에서는 Skipgram을 더 잘 이해하기 위해서 직접 그 원리를 구현했습니다.\
+                주어진 RandomWalk 위에서 '슬라이딩 윈도우' 방법으로, 윈도우 범위 내 함께 나타나는 vertex 쌍들을 뽑아내는 메소드를 만들었습니다.\
+                그리고 이 vertex 쌍들의 우도를 최대로 하도록 BinaryTree의 classifier들을 학습시킵니다.\
+            `
         }
     },
     {

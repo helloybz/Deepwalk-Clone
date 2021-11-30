@@ -22,7 +22,8 @@ export function Body() {
             sx={{
                 "padding": {
                     "xs": '0 1rem',
-                    "md": '0 30rem'
+                    "md": '0 5rem',
+                    "lg": '0 30rem'
                 }
             }}
         >
@@ -52,7 +53,7 @@ export function Body() {
                 }}
                 container
             >
-                <Grid item xs={12} lg={'auto'}>
+                <Grid item xs={12} md={'auto'}>
                     Deepwalk-Clone
                 </Grid>
                 <Grid
