@@ -84,10 +84,10 @@ export const data = [
                 The class has a method that finds a path from the root node to the target leaf node, then the nodes in the path are used to choose the classifiers to be optimized.\
 
                 Finally, a Skipgram class is implemented.\
-                While the author has used 'gensim' library to use a ready-made Skipgram,\
-                 I've implement it myself in practicing pursose.\
                 The Skipgram class is kind of 'Trainer' class.\
-                It prepares all the things neccesary for training, such as PyTorch's optimizer and DataLoader.
+                It prepares all the things neccesary for training, such as PyTorch's optimizer and DataLoader.\
+                While the author has used 'gensim' library to use a ready-made Skipgram,\
+                I've implement it myself in practicing pursose.\
                 It also has a method that slides window on the given random walks samples to cature the local structural information.\
                 Then, it updates the BinaryTree's classifiers for the probabilty of being the pairs to be maximized.\
             `, 'kor': `\
