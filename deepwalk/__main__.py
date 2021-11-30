@@ -71,7 +71,7 @@ def run(args):
 
 def get_parser():
     parser = argparse.ArgumentParser(
-        prog="DeepWalk-Clone"
+        prog="deepwalk"
     )
     parser.add_argument(
         "--data_root", type=Path,
