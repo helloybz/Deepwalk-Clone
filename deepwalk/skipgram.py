@@ -1,7 +1,6 @@
 import numpy as np
 import torch
 from torch import random
-from torch.nn import BCELoss
 from torch.optim import SGD
 from torch.utils.data import DataLoader
 from tqdm import tqdm
@@ -20,7 +19,6 @@ class SkipGram(object):
         device:         torch.device,
     ) -> None:
         self.binary_tree = binary_tree
-        self.criterion = BCELoss()
         self.optimizer = SGD(
             params=self.binary_tree.parameters(),
             lr=lr,
