@@ -12,11 +12,30 @@ pip install git+https://github.com/helloybz/deepwalk-clone.git
 ```
 ## Usage
 ```bash
-deepwalk --data_root [DATA_DIRECTORY_PATH] --output_root  [OUTPUT_DIRECTORY_PATH] --config_file [CONFIG_PATH] [--gpu]
+deepwalk --data_root PATH --output_root PATH --config_file PATH [--gpu] [--checkpoint_period=0 INT]
 ```
-
+--data_root is supposed to be a directory which contains at least 2 files, `V` and `E`.\
+`V` contains list of node ids separated by `\n`.\
+`E` contains list of pairs of node id, separated by `\n`.\
+The pair of node should has a form like `[source_node_id]\t[target_node_id`.
+### Example
+`data_root/V`
+```txt
+1
+2
+3
+4
+5
+```
+`data_root/E`
+```txt
+1\t2
+1\t4
+2\t5
+3\t1
+```
 ## Config file
-All of the hyper-parameters of deepwalk is controlled in this `yaml` file.
+All of the hyper-parameters of deepwalk is controlled in this `yaml` file.\
 Below is an example of the config file.
 ```yaml
 n_dims: 128 # referred as d in the paper.
@@ -26,12 +45,13 @@ random_walker:
 skipgram:
   lr: 0.025
   window_size: 10 # referred as w in the paper.
-
 ```
 
 ## Experiments
- Cora dataset, a citation network, is used for the experiments.
- Both the original Deepwalk and the cloned Deepwalk used same hyper parameters as introduced in the original one's paper.
+
+ CORA dataset, a citation network, is used.\
+ Identical hyper parameters introduced in the paper are used to
+ both the original Deepwalk and the cloned Deepwalk.\
  - 128 dimensions
  - 40 steps per walk
  - 80 walks per node
@@ -39,9 +59,10 @@ skipgram:
 ### Loss graph
 ![loss_for_80_epochs](./assets/loss_80.jpg)
 ### Multi-Label Classification
- - Logistic regression is used.
+ - Logistic regression is used as classifier.
  - Train:Test ratio varies from 1:9 to 9:1.
  - Metrics are averaged after 10 runs.
+ - There are 7 classes in CORA dataset.
 #### Micro F1
 Column name means the percentage of train split.
 | Method         | 10%       | 20%       | 30%       | 40%       | 50%       | 60%       | 70%       | 80%       | 90%       |
