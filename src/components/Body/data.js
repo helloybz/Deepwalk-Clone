@@ -131,7 +131,7 @@ export const data = [
             10 window size. (10+10+1 when counting for both directions)
             Logistic Regression is used for the classification.
             The ratio of train and test split is varies from 1:9 to 9:1. 
-            The scores are averaged after 10 runs.            `,
+            The scores are averaged after 10 runs.`,
             'kor': `\
             문헌 참조 네트워크인 CORA 데이터셋을 실험에 사용했습니다.
             Deepwalk와 Deepwalk-Clone 모두 Deepwalk 원 논문에서 사용된 하이퍼 파라미터 그대로 사용했습니다.
@@ -141,8 +141,7 @@ export const data = [
             슬라이딩 윈도우의 크기 10
             분류 실험의 분류기로는 Logistic Regression을 사용했습니다.
             Train set와 Test set의 분할 비율은 1:9부터 9:1까지 적용했습니다.
-            같은 조건의 실험을 10번 반복한 후 평균 점수를 계산했습니다.
-            `,
+            같은 조건의 실험을 10번 반복한 후 평균 점수를 계산했습니다.`,
         }
     }
     ,

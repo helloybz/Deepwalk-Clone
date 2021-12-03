@@ -1,4 +1,4 @@
-import { Grid, List, ListItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Grid, List, ListItem, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 
 export function Content({ type, content, language }) {
 
@@ -10,7 +10,7 @@ export function Content({ type, content, language }) {
             sentences = content.eng.split('\n')
         }
         return (
-            <Grid container component={List}>
+            <Grid item xs={12} container component={List}>
                 {sentences.map((sentence, i) => (
                     <Grid key={i} item xs={12} component={ListItem}>
                         - {sentence}
@@ -26,7 +26,7 @@ export function Content({ type, content, language }) {
             paragraphs = content.eng.split('\n')
         }
         return (
-            <Grid container component={List}>
+            <Grid item xs={12} container component={List}>
                 {paragraphs.map((paragraph, i) => (
                     <Grid item key={i} xs={12} component={ListItem}>
                         <Typography paragraph>
@@ -38,28 +38,34 @@ export function Content({ type, content, language }) {
         )
     } else if (type === 'table') {
         return (
-            <div>
-                <Typography
-                    variant="h5">{content.eng.title}</Typography>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            {content.eng.header.map((name, i) => (
-                                <TableCell key={i}>{name}</TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {content.eng.rows.map((row, i) => (
-                            <TableRow key={i}>
-                                {row.map((val, j) => (
-                                    <TableCell key={j}>{val}</TableCell>
+            <Grid item xs={12} container>
+                <Grid item xs={12}>
+                    <Typography
+                        variant="h5">{content.eng.title}
+                    </Typography>
+                </Grid>
+
+                <Grid item xs={12} sx={{ overflow: 'auto' }}>
+                    <Table >
+                        <TableHead>
+                            <TableRow>
+                                {content.eng.header.map((name, i) => (
+                                    <TableCell key={i}>{name}</TableCell>
                                 ))}
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
+                        </TableHead>
+                        <TableBody>
+                            {content.eng.rows.map((row, i) => (
+                                <TableRow key={i}>
+                                    {row.map((val, j) => (
+                                        <TableCell key={j}>{val}</TableCell>
+                                    ))}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </Grid>
+            </Grid>
         )
     } else {
         return (

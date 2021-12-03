@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Box, Button, Grid, Fab, Typography } from "@mui/material";
+import { Box, Grid, Fab, Typography } from "@mui/material";
 import { GitHub } from "@mui/icons-material"
 import { Plot } from "./Plot"
 import { data, plot } from './data';
-import { Content } from './Content.js';
+import { Content } from './content.js';
 
 export function Body() {
     const [language, set_language] = useState('KOR')
@@ -19,29 +19,34 @@ export function Body() {
         <Grid
             container
             component={Box}
-            sx={{
-                "padding": {
-                    "xs": '0 1rem',
-                    "md": '0 5rem',
-                    "lg": '0 30rem'
-                }
-            }}
+            justifyContent='center'
         >
             <Fab
                 sx={{
                     position: "fixed",
-                    bottom: { xs: '1rem', lg: '15rem' },
-                    right: { xs: '1rem', lg: '15rem' },
+                    bottom: { xs: '1rem', lg: '5rem' },
+                    right: { xs: '1rem', lg: '10rem' },
                     zIndex: 1000,
                 }} onClick={handleLanguage}
             >
                 {language}
             </Fab>
-            <Grid item component={Typography} xs={12}
+            <Fab
+                sx={{
+                    position: "fixed",
+                    bottom: { xs: '5rem', lg: '10rem' },
+                    right: { xs: '1rem', lg: '10rem' },
+                    zIndex: 1000,
+                }} onClick={() => (window.location.href = "https://github.com/helloybz/deepwalk-clone")}
+            >
+                <GitHub />
+            </Fab>
+
+            <Grid item component={Typography} xs={11} md={8}
                 sx={{
                     color: "text.dark",
                     fontSize: {
-                        xs: "2.5rem",
+                        xs: "2.1rem",
                         md: "3rem",
                     },
                     fontWeight: "600",
@@ -51,29 +56,11 @@ export function Body() {
                     },
                     marginBottom: '1rem'
                 }}
-                container
             >
-                <Grid item xs={12} md={'auto'}>
-                    Deepwalk-Clone
-                </Grid>
-                <Grid
-                    component={Button}
-                    sx={{
-                        marginLeft: "2rem",
-                        fontSize: "2rem",
-                        borderStyle: 'solid',
-                        borderWidth: '1px',
-                        borderColor: 'border.dark',
-                        borderRadius: '5rem',
-                        ":hover": { cursor: "pointer" }
-                    }}
-                    onClick={() => (window.location.href = "https://github.com/helloybz/deepwalk-clone")}
-                >
-                    <GitHub />
-                </Grid>
-
+                Deepwalk-Clone
             </Grid>
-            <Grid item xs={12} lg={12} sx={{
+
+            <Grid item xs={11} md={8} sx={{
                 marginBottom: "1rem",
                 height: {
                     xs: "20rem",
@@ -84,11 +71,10 @@ export function Body() {
             </Grid>
             {
                 data.map((section, i) => (
-                    <Grid item xs={12} key={i} sx={{
+                    <Grid item xs={11} md={8} key={i} sx={{
                         marginBottom: "1rem"
-                    }}>
-                        <Typography
-                            variant='h2'
+                    }} container>
+                        <Grid item xs={12} component={Typography}
                             sx={{
                                 color: 'rgb(243, 246, 249)',
                                 fontSize: '2rem',
@@ -97,14 +83,16 @@ export function Body() {
                                 fontWeight: '1000'
                             }}>
                             {language === 'KOR' ? section.header.kor : section.header.eng}
-                        </Typography>
-                        <Typography
+                        </Grid>
+                        <Grid
+                            item
+                            xs={12}
                             sx={{
                                 color: 'rgb(243, 246, 249)',
                                 fontSize: '1.2rem',
-                            }}>
+                            }} container>
                             <Content type={section.content.type} content={section.content} language={language} />
-                        </Typography>
+                        </Grid>
                     </Grid>
                 ))
             }
